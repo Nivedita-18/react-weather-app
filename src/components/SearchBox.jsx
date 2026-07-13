@@ -6,6 +6,11 @@ function SearchBox({ city, setCity, fetchWeather, fetchCurrentLocation }) {
         placeholder="🔍 Search any city..."
         value={city}
         onChange={(e) => setCity(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            fetchWeather();
+          }
+        }}
       />
 
       <button onClick={fetchWeather}>🔍 Search</button>

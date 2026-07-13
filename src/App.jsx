@@ -1,27 +1,40 @@
-import { useWeather } from "./hooks/useWeather";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import SearchBox from "./components/SearchBox";
 import WeatherCard from "./components/WeatherCard";
 import ErrorMessage from "./components/ErrorMessage";
 import Loading from "./components/Loading";
+import RecentSearches from "./components/RecentSearches";
 import {
   getWeatherByCity,
   getWeatherByCoords,
+  getForecastByCity,
 } from "./services/weatherService";
 
 function App() {
-  // const [city, setCity] = useState("");
-  // const [weather, setWeather] = useState(null);
-  // const [error, setError] = useState("");
-  // const [loading, setLoading] = useState(false);
-  // const [background, setBackground] = useState("default");
-  const { city, setCity, weather, error, loading, background } = useWeather();
-  
+  const [city, setCity] = useState("");
+  const [weather, setWeather] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [background, setBackground] = useState("default");
+  const [theme, setTheme] = useState("light");
+  const [forecastData, setForecastData] = useState(null);
+
+  const [recentSearches, setRecentSearches] = useState(() => {
+    const saved = localStorage.getItem("recentSearches");
+    return saved ? JSON.parse(saved) : [];
+  });
+  useEffect(() => {
+    localStorage.setItem("recentSearches", JSON.stringify(recentSearches));
+  }, [recentSearches]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
   const updateWeatherState = (data) => {
     if (data.cod !== 200) {
       setError(data.message);
-      setWeather(null);
       setWeather(null);
       return false;
     }
@@ -29,36 +42,36 @@ function App() {
     setWeather(data);
     return true;
   };
-  const fetchWeatherByCity = async () => {
-    if (!city.trim()) return;
+
+  const fetchWeatherByCity = async (searchCity = city) => {
+    if (!searchCity.trim()) return;
     setWeather(null);
     setError("");
     setLoading(true);
 
     try {
-      const data = await getWeatherByCity(city);
+      const data = await getWeatherByCity(searchCity);
+      const forecast = await getForecastByCity(searchCity);
+      setForecastData(forecast);
       const success = updateWeatherState(data);
 
       if (!success) {
         setLoading(false);
         return;
       }
-      const condition = data.weather[0].main;
+      setRecentSearches((prev) => {
+        const updated = [
+          searchCity,
+          ...prev.filter((item) => item !== searchCity),
+        ];
 
-      if (condition === "Clear") {
-        setBackground("sunny");
-      } else if (condition === "Clouds") {
-        setBackground("cloudy");
-      } else if (condition === "Rain") {
-        setBackground("rainy");
-      } else if (condition === "Snow") {
-        setBackground("snow");
-      } else {
-        setBackground("default");
-      }
+        return updated.slice(0, 5);
+      });
+
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      setError("Something went wrong. Please try again.");
+      setWeather(null);
       setLoading(false);
     }
   };
@@ -77,9 +90,6 @@ function App() {
         setLoading(false);
         return;
       }
-
-      setError("");
-      setWeather(data);
 
       const condition = data.weather[0].main;
 
@@ -118,14 +128,21 @@ function App() {
   };
 
   return (
-    <div className={`container ${background}`}>
-      <Header />
+    <div className={`container ${background} ${theme}`}>
+      <Header theme={theme} toggleTheme={toggleTheme} />
 
       <SearchBox
         city={city}
         setCity={setCity}
         fetchWeather={fetchWeatherByCity}
         fetchCurrentLocation={fetchCurrentLocation}
+      />
+      <RecentSearches
+        recentSearches={recentSearches}
+        onSearch={(searchCity) => {
+          setCity(searchCity);
+          fetchWeatherByCity(searchCity);
+        }}
       />
       <Loading loading={loading} />
       <ErrorMessage error={error} />

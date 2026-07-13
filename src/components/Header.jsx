@@ -1,7 +1,11 @@
-function Header() {
+function Header({ theme, toggleTheme }) {
   return (
     <header>
       <h1>🌦 Weather App</h1>
+
+      <button onClick={toggleTheme} className="theme-btn">
+        {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
+      </button>
 
       <p>Check the weather of any city instantly</p>
 

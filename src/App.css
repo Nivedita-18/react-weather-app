@@ -242,3 +242,21 @@ opacity:0.5;
 }
 
 }
+
+.light {
+  color: #222;
+}
+
+.dark {
+  background-color: #121212;
+  color: white;
+}
+
+.theme-btn {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+

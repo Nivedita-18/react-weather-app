@@ -13,3 +13,11 @@ export async function getWeatherByCoords(lat, lon) {
   const response = await fetch(url);
   return await response.json();
 }
+
+export async function getForecastByCity(city) {
+  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
+
+  const response = await fetch(url);
+  return await response.json();
+
+}
