@@ -13,7 +13,7 @@ function SearchBox({ city, setCity, fetchWeather, fetchCurrentLocation }) {
         }}
       />
 
-      <button onClick={fetchWeather}>🔍 Search</button>
+      <button onClick={() => fetchWeather()}>🔍 Search</button>
 
       <div className="divider">
         <span>OR</span>

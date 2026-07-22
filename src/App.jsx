@@ -10,6 +10,7 @@ import {
   getWeatherByCoords,
   getForecastByCity,
 } from "./services/weatherService";
+import ForecastCard from "./components/ForecastCard";
 
 function App() {
   const [city, setCity] = useState("");
@@ -44,7 +45,12 @@ function App() {
   };
 
   const fetchWeatherByCity = async (searchCity = city) => {
+    if (typeof searchCity !== "string") {
+      searchCity = city;
+    }
+
     if (!searchCity.trim()) return;
+
     setWeather(null);
     setError("");
     setLoading(true);
@@ -52,13 +58,18 @@ function App() {
     try {
       const data = await getWeatherByCity(searchCity);
       const forecast = await getForecastByCity(searchCity);
+
+      console.log(forecast);
+
       setForecastData(forecast);
+
       const success = updateWeatherState(data);
 
       if (!success) {
         setLoading(false);
         return;
       }
+
       setRecentSearches((prev) => {
         const updated = [
           searchCity,
@@ -147,6 +158,8 @@ function App() {
       <Loading loading={loading} />
       <ErrorMessage error={error} />
       <WeatherCard weather={weather} />
+
+      <ForecastCard forecastData={forecastData} />
     </div>
   );
 }
