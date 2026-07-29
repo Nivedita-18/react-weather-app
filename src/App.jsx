@@ -9,9 +9,11 @@ import {
   getWeatherByCity,
   getWeatherByCoords,
   getForecastByCity,
+  getAirQuality,
 } from "./services/weatherService";
 import ForecastCard from "./components/ForecastCard";
 import Favorites from "./components/Favorites";
+import AQICard from "./components/AQICard";
 
 function App() {
   const [city, setCity] = useState("");
@@ -23,6 +25,8 @@ function App() {
     return localStorage.getItem("theme") || "light";
   });
   const [forecastData, setForecastData] = useState(null);
+
+  const [airQuality, setAirQuality] = useState(null);
 
   const [recentSearches, setRecentSearches] = useState(() => {
     const saved = localStorage.getItem("recentSearches");
@@ -90,7 +94,20 @@ function App() {
       const data = await getWeatherByCity(searchCity);
       const forecast = await getForecastByCity(searchCity);
 
-      console.log(forecast);
+      const air = await getAirQuality(data.coord.lat, data.coord.lon);
+
+      console.log("FORECAST", forecast);
+      console.log("AQI", air);
+
+      setAirQuality(air);
+
+      //const air = await getAirQuality(data.coord.lat, data.coord.lon);
+
+      //setAirQuality(air);
+
+      //console.log(air);
+
+      //console.log(forecast);
 
       setForecastData(forecast);
 
@@ -195,7 +212,10 @@ function App() {
           weather={weather}
           favorites={favorites}
           setFavorites={setFavorites}
+          airQuality={airQuality}
         />
+
+        <AQICard airQuality={airQuality} />
 
         <ForecastCard forecastData={forecastData} />
       </div>

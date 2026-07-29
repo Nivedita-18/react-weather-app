@@ -2,7 +2,7 @@ import { formatTime } from "../utils/formatTime";
 import DetailCard from "./DetailCard";
 import "./WeatherCard.css";
 
-function WeatherCard({ weather, favorites, setFavorites }) {
+function WeatherCard({ weather, favorites, setFavorites, airQuality }) {
   if (!weather) return null;
 
   const sunrise = formatTime(weather.sys.sunrise);
@@ -15,6 +15,25 @@ function WeatherCard({ weather, favorites, setFavorites }) {
       setFavorites(favorites.filter((item) => item !== city));
     } else {
       setFavorites([...favorites, city]);
+    }
+  };
+
+  const aqi = airQuality?.list?.[0]?.main?.aqi;
+
+  const getAQIText = (value) => {
+    switch (value) {
+      case 1:
+        return "🟢 Good";
+      case 2:
+        return "🟡 Fair";
+      case 3:
+        return "🟠 Moderate";
+      case 4:
+        return "🔴 Poor";
+      case 5:
+        return "🟣 Very Poor";
+      default:
+        return "Not Available";
     }
   };
 

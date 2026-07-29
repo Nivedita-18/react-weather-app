@@ -21,3 +21,10 @@ export async function getForecastByCity(city) {
   return await response.json();
 
 }
+
+export async function getAirQuality(lat, lon) {
+  const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+
+  const response = await fetch(url);
+  return await response.json();
+}
