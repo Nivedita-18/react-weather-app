@@ -1,4 +1,10 @@
-function SearchBox({ city, setCity, fetchWeather, fetchCurrentLocation }) {
+function SearchBox({
+  city,
+  setCity,
+  fetchWeather,
+  fetchCurrentLocation,
+  loading,
+}) {
   return (
     <div className="search-container">
       <input
@@ -13,7 +19,9 @@ function SearchBox({ city, setCity, fetchWeather, fetchCurrentLocation }) {
         }}
       />
 
-      <button onClick={() => fetchWeather()}>🔍 Search</button>
+      <button onClick={() => fetchWeather()} disabled={!city.trim() || loading}>
+        {loading ? "⏳ Searching..." : "🔍 Search"}
+      </button>
 
       <div className="divider">
         <span>OR</span>

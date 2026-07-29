@@ -1,0 +1,26 @@
+.detail-card {
+  background:var(--card);
+  backdrop-filter: blur(10px);
+
+  border-radius: 18px;
+  padding: 20px;
+
+  text-align: center;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+  transition: all 0.3s ease;
+}
+
+.detail-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.detail-card h3{
+  color: var(--text);
+}
+
+.detail-card p{
+  color: var(--text);
+}

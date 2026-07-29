@@ -11,6 +11,7 @@ import {
   getForecastByCity,
 } from "./services/weatherService";
 import ForecastCard from "./components/ForecastCard";
+import Favorites from "./components/Favorites";
 
 function App() {
   const [city, setCity] = useState("");
@@ -18,19 +19,49 @@ function App() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [background, setBackground] = useState("default");
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "light";
+  });
   const [forecastData, setForecastData] = useState(null);
 
   const [recentSearches, setRecentSearches] = useState(() => {
     const saved = localStorage.getItem("recentSearches");
     return saved ? JSON.parse(saved) : [];
   });
+
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem("favorites");
+    return saved ? JSON.parse(saved) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem("recentSearches", JSON.stringify(recentSearches));
   }, [recentSearches]);
 
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
+
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
+  const updateBackground = (condition) => {
+    if (condition === "Clear") {
+      setBackground("sunny");
+    } else if (condition === "Clouds") {
+      setBackground("cloudy");
+    } else if (condition === "Rain") {
+      setBackground("rainy");
+    } else if (condition === "Snow") {
+      setBackground("snow");
+    } else {
+      setBackground("default");
+    }
   };
 
   const updateWeatherState = (data) => {
@@ -64,6 +95,7 @@ function App() {
       setForecastData(forecast);
 
       const success = updateWeatherState(data);
+      updateBackground(data.weather[0].main);
 
       if (!success) {
         setLoading(false);
@@ -102,19 +134,7 @@ function App() {
         return;
       }
 
-      const condition = data.weather[0].main;
-
-      if (condition === "Clear") {
-        setBackground("sunny");
-      } else if (condition === "Clouds") {
-        setBackground("cloudy");
-      } else if (condition === "Rain") {
-        setBackground("rainy");
-      } else if (condition === "Snow") {
-        setBackground("snow");
-      } else {
-        setBackground("default");
-      }
+      updateBackground(data.weather[0].main);
 
       setLoading(false);
     } catch (error) {
@@ -140,26 +160,45 @@ function App() {
 
   return (
     <div className={`container ${background} ${theme}`}>
-      <Header theme={theme} toggleTheme={toggleTheme} />
+      <div className="content">
+        <Header theme={theme} toggleTheme={toggleTheme} />
 
-      <SearchBox
-        city={city}
-        setCity={setCity}
-        fetchWeather={fetchWeatherByCity}
-        fetchCurrentLocation={fetchCurrentLocation}
-      />
-      <RecentSearches
-        recentSearches={recentSearches}
-        onSearch={(searchCity) => {
-          setCity(searchCity);
-          fetchWeatherByCity(searchCity);
-        }}
-      />
-      <Loading loading={loading} />
-      <ErrorMessage error={error} />
-      <WeatherCard weather={weather} />
+        <SearchBox
+          city={city}
+          setCity={setCity}
+          fetchWeather={fetchWeatherByCity}
+          fetchCurrentLocation={fetchCurrentLocation}
+          loading={loading}
+        />
 
-      <ForecastCard forecastData={forecastData} />
+        <RecentSearches
+          recentSearches={recentSearches}
+          onSearch={(searchCity) => {
+            setCity(searchCity);
+            fetchWeatherByCity(searchCity);
+          }}
+        />
+
+        <Favorites
+          favorites={favorites}
+          onSearch={(searchCity) => {
+            setCity(searchCity);
+            fetchWeatherByCity(searchCity);
+          }}
+        />
+
+        <Loading loading={loading} />
+
+        <ErrorMessage error={error} />
+
+        <WeatherCard
+          weather={weather}
+          favorites={favorites}
+          setFavorites={setFavorites}
+        />
+
+        <ForecastCard forecastData={forecastData} />
+      </div>
     </div>
   );
 }

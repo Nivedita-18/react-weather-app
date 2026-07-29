@@ -243,13 +243,17 @@ opacity:0.5;
 
 }
 
-.light {
+.container.light {
   color: #222;
 }
 
-.dark {
-  background-color: #121212;
+.container.dark {
+  background: #121212 !important;
   color: white;
+}
+
+.container.light {
+  color: #222;
 }
 
 .theme-btn {

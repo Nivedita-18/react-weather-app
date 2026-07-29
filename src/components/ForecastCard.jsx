@@ -1,5 +1,5 @@
 import "./ForecastCard.css";
-
+import { getWeatherIcon } from "../utils/weatherIcons";
 function ForecastCard({ forecastData }) {
   if (!forecastData) {
     return null;
@@ -35,15 +35,24 @@ function ForecastCard({ forecastData }) {
 
           const iconUrl = `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
 
+          const icon = getWeatherIcon(item.weather[0].main);
+
           return (
             <div className="forecast-card" key={item.dt}>
               <h3>{day}</h3>
               <p>{time}</p>
 
-              <p>🌡 {item.main.temp}°C</p>
               <img src={iconUrl} alt={item.weather[0].description} />
 
-              <p>{item.weather[0].description}</p>
+              <h2>{Math.round(item.main.temp)}°C</h2>
+
+              <p>Feels like {Math.round(item.main.feels_like)}°C</p>
+
+              <p>
+                {icon} {item.weather[0].description}
+              </p>
+
+              <p>💧 {item.main.humidity}%</p>
 
               <p>💨 {item.wind.speed} km/h</p>
             </div>
