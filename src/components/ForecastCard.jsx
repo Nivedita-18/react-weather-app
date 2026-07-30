@@ -9,6 +9,8 @@ function ForecastCard({ forecastData }) {
     item.dt_txt.includes("12:00:00"),
   );
 
+  const hourlyForecast = forecastData.list.slice(0, 8);
+
   const firstFive =
     dailyForecast.length > 0
       ? dailyForecast.slice(0, 5)
@@ -18,6 +20,31 @@ function ForecastCard({ forecastData }) {
 
   return (
     <div className="forecast">
+      <div className="hourly-section">
+        <h2>⏰ Today's Hourly Forecast</h2>
+
+        <div className="hourly-container">
+          {hourlyForecast.map((item) => {
+            const time = new Date(item.dt_txt).toLocaleTimeString("en-US", {
+              hour: "numeric",
+            });
+
+            const icon = getWeatherIcon(item.weather[0].main);
+
+            const iconUrl = `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
+
+            return (
+              <div className="hourly-card" key={item.dt}>
+                <p>{time}</p>
+
+                <div className="hourly-icon">{icon}</div>
+                <h3>{Math.round(item.main.temp)}°C</h3>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       <h2>📅 5-Day Forecast</h2>
 
       <div className="forecast-container">

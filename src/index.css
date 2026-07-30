@@ -10,6 +10,8 @@
 
   --text:#222222;
 
+  --text-secondary:#555555;
+
   --card:rgba(255,255,255,.18);
 
   --input:#ffffff;
@@ -225,9 +227,15 @@ header p{
 }
 
 .container.dark{
+
   --text:white;
+
+  --text-secondary:#d1d5db;
+
   --card:rgba(40,40,40,.9);
+
   --input:#2d2d2d;
+
 }
 
 /* ===== Dynamic Backgrounds ===== */

@@ -60,3 +60,65 @@
   margin: 8px 0;
   font-size: .95rem;
 }
+
+.hourly-section {
+  margin-bottom: 35px;
+}
+
+.hourly-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.hourly-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.hourly-container::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.hourly-card {
+  min-width: 100px;
+  padding: 15px;
+  border-radius: 18px;
+  text-align: center;
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.hourly-card:hover {
+  transform: translateY(-5px);
+}
+
+.hourly-card img {
+  width: 55px;
+  height: 55px;
+}
+
+.hourly-card p {
+  margin: 8px 0;
+}
+
+.hourly-card h3 {
+  margin: 8px 0 0;
+}
+
+.hourly-card {
+  color: var(--text);
+}
+
+.hourly-card h3 {
+  color: var(--text);
+}
+
+.hourly-card p {
+  color: var(--text);
+}
+
+
