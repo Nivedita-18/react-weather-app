@@ -41,8 +41,23 @@
 
 ## 📸 Preview
 
-> Add screenshots here after capturing the final dashboard. Recommended files:
-> `screenshots/dashboard.png`, `screenshots/dark-mode.png`, `screenshots/mobile.png`
+### 🌤️ Main Dashboard
+
+The dashboard provides city search, current-location access, recent searches and favorite cities in a clean responsive layout.
+
+### 🌙 Dark Mode
+
+A dedicated dark theme improves readability and provides a polished dashboard experience for low-light environments.
+
+### 🌫️ Air Quality
+
+The dashboard includes AQI information with a visual quality indicator and health guidance.
+
+### 🕒 Hourly & 📅 5-Day Forecast
+
+Weatherly presents upcoming hourly conditions and a multi-day forecast so users can quickly plan ahead.
+
+> **Screenshot set:** dashboard, current weather, hourly forecast, 5-day forecast, Air Quality and dark mode.
 
 ## 🚀 Live Demo
 
