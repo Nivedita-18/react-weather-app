@@ -1,30 +1,42 @@
 const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
 
-export async function getWeatherByCity(city) {
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+const buildUrl = (endpoint, params) => {
+  const searchParams = new URLSearchParams({
+    ...params,
+    appid: apiKey,
+    units: "metric",
+  });
 
-  const response = await fetch(url);
-  return await response.json();
+  return `https://api.openweathermap.org/data/2.5/${endpoint}?${searchParams}`;
+};
+
+const fetchWeatherData = async (endpoint, params) => {
+  const response = await fetch(buildUrl(endpoint, params));
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Weather service request failed");
+  }
+
+  return data;
+};
+
+export function getWeatherByCity(city) {
+  return fetchWeatherData("weather", { q: city.trim() });
 }
 
-export async function getWeatherByCoords(lat, lon) {
-  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
-
-  const response = await fetch(url);
-  return await response.json();
+export function getWeatherByCoords(lat, lon) {
+  return fetchWeatherData("weather", { lat, lon });
 }
 
-export async function getForecastByCity(city) {
-  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
-
-  const response = await fetch(url);
-  return await response.json();
-
+export function getForecastByCity(city) {
+  return fetchWeatherData("forecast", { q: city.trim() });
 }
 
-export async function getAirQuality(lat, lon) {
-  const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+export function getForecastByCoords(lat, lon) {
+  return fetchWeatherData("forecast", { lat, lon });
+}
 
-  const response = await fetch(url);
-  return await response.json();
+export function getAirQuality(lat, lon) {
+  return fetchWeatherData("air_pollution", { lat, lon, units: undefined });
 }
