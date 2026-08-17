@@ -1,13 +1,21 @@
-# 🌦️ Weather App
+# 🌦️ Weatherly — React Weather Dashboard
 
-A modern, responsive weather dashboard built with **React + Vite** and powered by the **OpenWeather API**.
+<p align="center">
+  <strong>A modern, responsive weather dashboard built with React + Vite and powered by the OpenWeather API.</strong>
+</p>
 
-🔗 **Live Demo:** https://react-weather-app-beta-dusky.vercel.app/
+<p align="center">
+  <a href="https://react-weather-app-beta-dusky.vercel.app/">🚀 Live Demo</a>
+  ·
+  <a href="https://github.com/Nivedita-18/react-weather-app">📦 Source Code</a>
+</p>
+
+---
 
 ## ✨ Features
 
 - 🔍 Search weather by city
-- 📍 Use current location
+- 📍 Current-location weather
 - 🌡️ Current temperature and conditions
 - 🕒 Hourly forecast
 - 📅 5-day forecast
@@ -15,19 +23,30 @@ A modern, responsive weather dashboard built with **React + Vite** and powered b
 - ⭐ Favorite cities
 - 🕘 Recent searches
 - 🌙 Light / Dark mode
-- 🎨 Dynamic weather backgrounds and icons
-- 📱 Responsive design for mobile, tablet and desktop
+- 🎨 Dynamic weather backgrounds
+- 📱 Responsive mobile, tablet and desktop UI
 - ⚠️ Loading and error states
 
 ## 🛠️ Tech Stack
 
 | Technology | Purpose |
 |---|---|
-| React | UI and component-based architecture |
-| Vite | Development and build tooling |
-| JavaScript | Application logic |
-| CSS3 | Responsive styling and themes |
-| OpenWeather API | Weather and air-quality data |
+| ⚛️ React | Component-based UI |
+| ⚡ Vite | Development and production tooling |
+| 🟨 JavaScript | Application logic |
+| 🎨 CSS3 | Responsive styling, themes and animations |
+| 🌤️ OpenWeather API | Weather and air-quality data |
+| 💾 localStorage | Favorites, recent searches and theme persistence |
+| 📍 Geolocation API | Current-location weather |
+
+## 📸 Preview
+
+> Add screenshots here after capturing the final dashboard. Recommended files:
+> `screenshots/dashboard.png`, `screenshots/dark-mode.png`, `screenshots/mobile.png`
+
+## 🚀 Live Demo
+
+**Try the app:** https://react-weather-app-beta-dusky.vercel.app/
 
 ## 📁 Project Structure
 
@@ -37,12 +56,13 @@ src/
 ├── hooks/          # Custom React hooks
 ├── services/       # API/service layer
 ├── styles/         # Component-specific styles
-├── utils/          # Formatting, icons and weather helpers
+├── utils/          # Weather and formatting helpers
 ├── App.jsx         # Main application
+├── index.css       # Global responsive styling
 └── main.jsx        # React entry point
 ```
 
-## 🚀 Getting Started
+## ⚙️ Getting Started
 
 ### 1. Clone the repository
 
@@ -65,29 +85,52 @@ Create a `.env` file in the project root:
 VITE_WEATHER_API_KEY=your_openweather_api_key_here
 ```
 
-> Never commit `.env` or expose your API key in source control.
+You can use `.env.example` as a template.
 
-### 4. Start the development server
+> 🔐 Never commit `.env` or expose a real API key in source control.
+
+### 4. Run locally
 
 ```bash
 npm run dev
 ```
 
-Open the local URL shown by Vite in your browser.
+Open the local URL shown by Vite.
+
+### 5. Build for production
+
+```bash
+npm run build
+```
 
 ## 🎯 What I Learned
 
 - Building reusable React components
-- Managing API-driven application state
-- Creating custom hooks for data fetching
-- Handling loading, errors and empty states
-- Working with browser geolocation
-- Persisting favorites and recent searches
-- Building responsive and theme-aware interfaces
-- Structuring a React project for maintainability
+- Managing API-driven state
+- Working with asynchronous API requests
+- Handling loading and error states
+- Using browser geolocation
+- Persisting data with localStorage
+- Creating responsive layouts with CSS Grid and media queries
+- Implementing light/dark themes
+- Creating dynamic weather-based UI
+- Organizing a frontend project for maintainability
+
+## 🔮 Future Improvements
+
+- 🌡️ Celsius / Fahrenheit switcher
+- 📈 Temperature trend charts
+- 🌅 Sunrise and sunset visualization
+- 🗺️ Weather map integration
+- 🔔 Weather alerts and notifications
+- ♿ Improved accessibility and keyboard navigation
 
 ## 👩‍💻 Author
 
 **Nivedita**
 
-Built as a frontend project to practice React, API integration and responsive UI development.
+Frontend project created to practice **React, API integration, responsive UI and modern frontend development**.
+
+---
+
+<p align="center">Made with ❤️ using React</p>
