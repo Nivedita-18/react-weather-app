@@ -5,38 +5,52 @@ import WeatherCard from "./components/WeatherCard";
 import ErrorMessage from "./components/ErrorMessage";
 import Loading from "./components/Loading";
 import RecentSearches from "./components/RecentSearches";
+import ForecastCard from "./components/ForecastCard";
+import Favorites from "./components/Favorites";
+import AQICard from "./components/AQICard";
 import {
   getWeatherByCity,
   getWeatherByCoords,
   getForecastByCity,
+  getForecastByCoords,
   getAirQuality,
 } from "./services/weatherService";
-import ForecastCard from "./components/ForecastCard";
-import Favorites from "./components/Favorites";
-import AQICard from "./components/AQICard";
+
+const getStoredArray = (key) => {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+};
+
+const getBackground = (condition = "") => {
+  const backgrounds = {
+    Clear: "sunny",
+    Clouds: "cloudy",
+    Rain: "rainy",
+    Snow: "snow",
+  };
+
+  return backgrounds[condition] || "default";
+};
 
 function App() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
+  const [forecastData, setForecastData] = useState(null);
+  const [airQuality, setAirQuality] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [background, setBackground] = useState("default");
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem("theme") || "light";
-  });
-  const [forecastData, setForecastData] = useState(null);
-
-  const [airQuality, setAirQuality] = useState(null);
-
-  const [recentSearches, setRecentSearches] = useState(() => {
-    const saved = localStorage.getItem("recentSearches");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem("favorites");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "light"
+  );
+  const [recentSearches, setRecentSearches] = useState(() =>
+    getStoredArray("recentSearches")
+  );
+  const [favorites, setFavorites] = useState(() => getStoredArray("favorites"));
 
   useEffect(() => {
     localStorage.setItem("recentSearches", JSON.stringify(recentSearches));
@@ -51,128 +65,83 @@ function App() {
   }, [favorites]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    setTheme((current) => (current === "light" ? "dark" : "light"));
   };
 
-  const updateBackground = (condition) => {
-    if (condition === "Clear") {
-      setBackground("sunny");
-    } else if (condition === "Clouds") {
-      setBackground("cloudy");
-    } else if (condition === "Rain") {
-      setBackground("rainy");
-    } else if (condition === "Snow") {
-      setBackground("snow");
-    } else {
-      setBackground("default");
-    }
-  };
-
-  const updateWeatherState = (data) => {
-    if (data.cod !== 200) {
-      setError(data.message);
-      setWeather(null);
-      return false;
-    }
+  const loadWeatherData = async (weatherRequest, forecastRequest) => {
+    setWeather(null);
+    setForecastData(null);
+    setAirQuality(null);
     setError("");
-    setWeather(data);
-    return true;
+    setLoading(true);
+
+    try {
+      const weatherData = await weatherRequest();
+      const [forecast, air] = await Promise.all([
+        forecastRequest(),
+        getAirQuality(weatherData.coord.lat, weatherData.coord.lon),
+      ]);
+
+      setWeather(weatherData);
+      setForecastData(forecast);
+      setAirQuality(air);
+      setBackground(getBackground(weatherData.weather?.[0]?.main));
+
+      return weatherData;
+    } catch (requestError) {
+      setError(requestError.message || "Something went wrong. Please try again.");
+      return null;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchWeatherByCity = async (searchCity = city) => {
-    if (typeof searchCity !== "string") {
-      searchCity = city;
-    }
+    const normalizedCity =
+      typeof searchCity === "string" ? searchCity.trim() : city.trim();
 
-    if (!searchCity.trim()) return;
-
-    setWeather(null);
-    setError("");
-    setLoading(true);
-
-    try {
-      const data = await getWeatherByCity(searchCity);
-      const forecast = await getForecastByCity(searchCity);
-
-      const air = await getAirQuality(data.coord.lat, data.coord.lon);
-
-      console.log("FORECAST", forecast);
-      console.log("AQI", air);
-
-      setAirQuality(air);
-
-      //const air = await getAirQuality(data.coord.lat, data.coord.lon);
-
-      //setAirQuality(air);
-
-      //console.log(air);
-
-      //console.log(forecast);
-
-      setForecastData(forecast);
-
-      const success = updateWeatherState(data);
-      updateBackground(data.weather[0].main);
-
-      if (!success) {
-        setLoading(false);
-        return;
-      }
-
-      setRecentSearches((prev) => {
-        const updated = [
-          searchCity,
-          ...prev.filter((item) => item !== searchCity),
-        ];
-
-        return updated.slice(0, 5);
-      });
-
-      setLoading(false);
-    } catch (error) {
-      setError("Something went wrong. Please try again.");
-      setWeather(null);
-      setLoading(false);
-    }
-  };
-
-  const fetchWeatherByCoords = async (lat, lon) => {
-    setWeather(null);
-    setError("");
-    setLoading(true);
-
-    try {
-      const data = await getWeatherByCoords(lat, lon);
-
-      const success = updateWeatherState(data);
-
-      if (!success) {
-        setLoading(false);
-        return;
-      }
-
-      updateBackground(data.weather[0].main);
-
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-
-      setLoading(false);
-    }
-  };
-
-  const fetchCurrentLocation = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
+    if (!normalizedCity) {
+      setError("Please enter a city name.");
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
+    const data = await loadWeatherData(
+      () => getWeatherByCity(normalizedCity),
+      () => getForecastByCity(normalizedCity)
+    );
 
-      fetchWeatherByCoords(lat, lon);
-    });
+    if (!data) return;
+
+    setRecentSearches((previous) => [
+      normalizedCity,
+      ...previous.filter(
+        (item) => item.toLowerCase() !== normalizedCity.toLowerCase()
+      ),
+    ].slice(0, 5));
+  };
+
+  const fetchWeatherByCoords = (lat, lon) =>
+    loadWeatherData(
+      () => getWeatherByCoords(lat, lon),
+      () => getForecastByCoords(lat, lon)
+    );
+
+  const fetchCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    setError("");
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => fetchWeatherByCoords(coords.latitude, coords.longitude),
+      () => setError("Unable to access your location. Please allow location access.")
+    );
+  };
+
+  const searchSavedCity = (savedCity) => {
+    setCity(savedCity);
+    fetchWeatherByCity(savedCity);
   };
 
   return (
@@ -190,22 +159,12 @@ function App() {
 
         <RecentSearches
           recentSearches={recentSearches}
-          onSearch={(searchCity) => {
-            setCity(searchCity);
-            fetchWeatherByCity(searchCity);
-          }}
+          onSearch={searchSavedCity}
         />
 
-        <Favorites
-          favorites={favorites}
-          onSearch={(searchCity) => {
-            setCity(searchCity);
-            fetchWeatherByCity(searchCity);
-          }}
-        />
+        <Favorites favorites={favorites} onSearch={searchSavedCity} />
 
         <Loading loading={loading} />
-
         <ErrorMessage error={error} />
 
         <WeatherCard
@@ -216,7 +175,6 @@ function App() {
         />
 
         <AQICard airQuality={airQuality} />
-
         <ForecastCard forecastData={forecastData} />
       </div>
     </div>
