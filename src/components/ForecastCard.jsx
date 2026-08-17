@@ -31,7 +31,7 @@ function ForecastCard({ forecastData }) {
 
             const icon = getWeatherIcon(item.weather[0].main);
 
-            const iconUrl = `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
+            // const iconUrl = `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`;
 
             return (
               <div className="hourly-card" key={item.dt}>
