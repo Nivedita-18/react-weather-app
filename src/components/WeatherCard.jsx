@@ -2,7 +2,7 @@ import { formatTime } from "../utils/formatTime";
 import DetailCard from "./DetailCard";
 import "./WeatherCard.css";
 
-function WeatherCard({ weather, favorites, setFavorites, airQuality }) {
+function WeatherCard({ weather, favorites, setFavorites }) {
   if (!weather) return null;
 
   const sunrise = formatTime(weather.sys.sunrise);
@@ -18,24 +18,24 @@ function WeatherCard({ weather, favorites, setFavorites, airQuality }) {
     }
   };
 
-  const aqi = airQuality?.list?.[0]?.main?.aqi;
+  // const aqi = airQuality?.list?.[0]?.main?.aqi;
 
-  const getAQIText = (value) => {
-    switch (value) {
-      case 1:
-        return "🟢 Good";
-      case 2:
-        return "🟡 Fair";
-      case 3:
-        return "🟠 Moderate";
-      case 4:
-        return "🔴 Poor";
-      case 5:
-        return "🟣 Very Poor";
-      default:
-        return "Not Available";
-    }
-  };
+  // const getAQIText = (value) => {
+  //   switch (value) {
+  //     case 1:
+  //       return "🟢 Good";
+  //     case 2:
+  //       return "🟡 Fair";
+  //     case 3:
+  //       return "🟠 Moderate";
+  //     case 4:
+  //       return "🔴 Poor";
+  //     case 5:
+  //       return "🟣 Very Poor";
+  //     default:
+  //       return "Not Available";
+  //   }
+  // };
 
   return (
     <div className="weather-card">
