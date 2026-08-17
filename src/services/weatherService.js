@@ -1,17 +1,24 @@
 const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
 
-const buildUrl = (endpoint, params) => {
-  const searchParams = new URLSearchParams({
+const buildUrl = (endpoint, params = {}, includeMetricUnits = true) => {
+  const query = {
     ...params,
     appid: apiKey,
-    units: "metric",
-  });
+  };
+
+  if (includeMetricUnits) {
+    query.units = "metric";
+  }
+
+  const searchParams = new URLSearchParams(
+    Object.entries(query).filter(([, value]) => value !== undefined && value !== null)
+  );
 
   return `https://api.openweathermap.org/data/2.5/${endpoint}?${searchParams}`;
 };
 
-const fetchWeatherData = async (endpoint, params) => {
-  const response = await fetch(buildUrl(endpoint, params));
+const fetchWeatherData = async (endpoint, params, includeMetricUnits = true) => {
+  const response = await fetch(buildUrl(endpoint, params, includeMetricUnits));
   const data = await response.json();
 
   if (!response.ok) {
@@ -38,5 +45,5 @@ export function getForecastByCoords(lat, lon) {
 }
 
 export function getAirQuality(lat, lon) {
-  return fetchWeatherData("air_pollution", { lat, lon, units: undefined });
+  return fetchWeatherData("air_pollution", { lat, lon }, false);
 }
