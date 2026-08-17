@@ -5,6 +5,13 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white" alt="React" />
+  <img src="https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black" alt="JavaScript" />
+  <img src="https://img.shields.io/badge/Responsive-Yes-22C55E" alt="Responsive" />
+</p>
+
+<p align="center">
   <a href="https://react-weather-app-beta-dusky.vercel.app/">🚀 Live Demo</a>
   ·
   <a href="https://github.com/Nivedita-18/react-weather-app">📦 Source Code</a>
